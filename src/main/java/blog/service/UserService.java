@@ -9,7 +9,6 @@
  */
 package blog.service;
 
-import blog.dao.UserDao;
 import blog.domain.UserDto;
 
 import java.util.Map;

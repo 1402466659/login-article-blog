@@ -13,17 +13,22 @@ import lombok.Data;
 
 @Data
 public class Article {
+    private  int id;
     private String title;
     private String content;
-    private  int diamond;
+    private  double diamond;
     private int comment;
+    private String author;
+    private int likes;
 
-
-    public Article(String title, String content, int diamond, int comment) {
+    public Article(int id, String title, String content, double diamond, int comment, String author, int likes) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.diamond = diamond;
         this.comment = comment;
+        this.author = author;
+        this.likes = likes;
     }
 
     public Article() {

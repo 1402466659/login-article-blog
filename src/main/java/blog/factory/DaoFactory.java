@@ -9,9 +9,7 @@
  */
 package blog.factory;
 
-import blog.dao.StudentDaoImpl;
-import blog.dao.UserDao;
-import blog.dao.UserDaoImpl;
+import blog.dao.*;
 
 public class DaoFactory {
     public static StudentDaoImpl getStudentDaoInstance(){
@@ -19,5 +17,8 @@ public class DaoFactory {
     }
     public static UserDao getUserDaoImpl (){
         return new UserDaoImpl();
+    }
+    public static ArticleDao getArticleImpl(){
+        return new ArticleDapImpl();
     }
 }

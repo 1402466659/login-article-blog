@@ -54,13 +54,33 @@ public class JSoupSpider {
         return userList;
     }
 
-//    public static List<Article>(){
-//        Document document = null;
-//        try {
-//            document = Jsoup.connect("https://www.jianshu.com/").get();
-//        } catch (IOException e) {
-//            logger.error("爬取文章信息失败");
-//        }
-//        Element divs = document.getElementsByClass("note-list");
-//    }
+    public static List<Article> getArticle(){
+        List<Article> articleList = new ArrayList<>(100);
+        Document document = null;
+            try {
+                document = Jsoup.connect("https://www.jianshu.com/").get();
+            } catch (IOException e) {
+                logger.error("爬取文章信息失败");
+            }
+            Elements divs = document.getElementsByClass("have-img");
+            divs.forEach(div->{
+                //初始化对象
+                Article article = new Article();
+                //标题
+                article.setTitle(div.child(1).child(0).text());
+                //内容
+                article.setContent(div.child(1).child(1).text());
+                //钻石
+                article.setDiamond(Double.parseDouble(div.child(1).child(2).child(0).text()));
+                //评论数
+                article.setComment(Integer.parseInt(div.child(1).child(2).child(2).text()));
+                //喜欢数
+                article.setLikes(Integer.parseInt(div.child(1).child(2).child(3).text()));
+                //作者
+                article.setAuthor(div.child(1).child(2).child(1).text());
+                articleList.add(article);
+            });
+        return articleList;
+    }
+
 }
