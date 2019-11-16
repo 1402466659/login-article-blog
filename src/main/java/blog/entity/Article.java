@@ -14,21 +14,21 @@ import lombok.Data;
 @Data
 public class Article {
     private  int id;
+    private int userid;
     private String title;
-    private String content;
-    private  double diamond;
-    private int comment;
-    private String author;
-    private int likes;
+    private String Scontent;
+    private String Ncomment;
+    private String Nread;
+    private String Lcontent;
 
-    public Article(int id, String title, String content, double diamond, int comment, String author, int likes) {
+    public Article(int id, int userid, String title, String scontent, String ncomment, String nread, String lcontent) {
         this.id = id;
+        this.userid = userid;
         this.title = title;
-        this.content = content;
-        this.diamond = diamond;
-        this.comment = comment;
-        this.author = author;
-        this.likes = likes;
+        Scontent = scontent;
+        Ncomment = ncomment;
+        Nread = nread;
+        Lcontent = lcontent;
     }
 
     public Article() {

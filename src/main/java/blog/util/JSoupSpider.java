@@ -1,6 +1,7 @@
 package blog.util;
 
 
+import blog.dao.ArticleDapImpl;
 import blog.entity.Article;
 import blog.entity.User;
 import org.jsoup.Jsoup;
@@ -11,9 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -25,10 +28,14 @@ import java.util.List;
  **/
 public class JSoupSpider {
     private static Logger logger = LoggerFactory.getLogger(JSoupSpider.class);
+    private static List detail = new ArrayList(100);
+    /**
+     * 获取用户信息
+     * */
     public static List<User> getUsers() {
         Document document = null;
         List<User> userList = new ArrayList<>(100);
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 10; i++) {
             try {
                 document = Jsoup.connect("https://www.jianshu.com/recommendations/users?utm_source=desktop&utm_medium=index-users&page=" + i).get();
             } catch (IOException e) {
@@ -53,34 +60,99 @@ public class JSoupSpider {
         }
         return userList;
     }
+/**
+ * 获取文章的简单信息
+ */
 
     public static List<Article> getArticle(){
         List<Article> articleList = new ArrayList<>(100);
-        Document document = null;
+        for(int num = 1;num<= 20 ;num++){
+            Document document = null;
             try {
-                document = Jsoup.connect("https://www.jianshu.com/").get();
+                document = Jsoup.connect("https://www.cnblogs.com/sitehome/p/"+num).get();
             } catch (IOException e) {
-                logger.error("爬取文章信息失败");
+                System.out.println("错啦");
             }
-            Elements divs = document.getElementsByClass("have-img");
-            divs.forEach(div->{
-                //初始化对象
-                Article article = new Article();
-                //标题
-                article.setTitle(div.child(1).child(0).text());
-                //内容
-                article.setContent(div.child(1).child(1).text());
-                //钻石
-                article.setDiamond(Double.parseDouble(div.child(1).child(2).child(0).text()));
-                //评论数
-                article.setComment(Integer.parseInt(div.child(1).child(2).child(2).text()));
-                //喜欢数
-                article.setLikes(Integer.parseInt(div.child(1).child(2).child(3).text()));
-                //作者
-                article.setAuthor(div.child(1).child(2).child(1).text());
+            Elements datas =  document.getElementsByClass("post_item_body");
+            datas.forEach(data->{
+//                System.out.println(data.child(0).text());//标题
+//                System.out.println(data.child(1).text());//小内容
+//                System.out.println(data.child(2).child(1).text());//评论数
+//                System.out.println(data.child(2).child(2).text());//阅读
+                Article article =new Article();
+                article.setTitle(data.child(0).text());
+                article.setScontent(data.child(1).text());
+                article.setNcomment(data.child(2).child(1).text());
+                article.setNread(data.child(2).child(2).text());
                 articleList.add(article);
             });
-        return articleList;
+            //获取详细内容
+//            Elements detaildivs = document.getElementsByClass("titlelnk");
+//            Elements dataillinks = detaildivs.select("a");
+//
+//            //获取超链接
+//            dataillinks.forEach(detaillink->{
+//                Document detaildocument = null;
+//                try {
+//                    detaildocument = Jsoup.connect(""+detaillink.attr("href")).get();
+////                    System.out.println(detaillink.attr("href"));//输出url
+//                } catch (IOException e) {
+//                    System.out.println("爬取详细信息错啦");
+//                }
+//                Elements detailmessage = detaildocument.getElementsByClass("postBody");
+//                Elements messagelink = detailmessage.select("p");
+//                //System.out.println(messagelink.text());//输出详细信息
+//                messagelink.text().replaceAll(" ", "");
+//                detail.add(messagelink.text());
+//            });
+        }return articleList;
+
+    }
+/**
+ * 获取详细的文章信息
+ * */
+    public static List getArticleDetail() {
+        for (int num = 1; num <= 20; num++) {
+            Document document = null;
+            try {
+                document = Jsoup.connect("https://www.cnblogs.com/sitehome/p/" + num).get();
+            } catch (IOException e) {
+                System.out.println("错啦");
+            }
+            Elements detaildivs = document.getElementsByClass("titlelnk");
+            Elements dataillinks = detaildivs.select("a");
+            //获取超链接
+            dataillinks.forEach(detaillink -> {
+                Document detaildocument = null;
+                try {
+                    detaildocument = Jsoup.connect("" + detaillink.attr("href")).get();
+//                    System.out.println(detaillink.attr("href"));//输出url
+                } catch (IOException e) {
+                    System.out.println("爬取详细信息错啦");
+                }
+                Elements detailmessage = detaildocument.getElementsByClass("postBody");
+                Elements messagelink = detailmessage.select("p");
+                //System.out.println(messagelink.text());//输出详细信息
+                messagelink.text().replaceAll(" ", "");
+                detail.add(messagelink.text());
+            });
+        }
+        return detail;
+    }
+
+    public static List getProject(){
+        List listproject = new ArrayList();
+        listproject.add("短篇小说");
+        listproject.add("故事");
+        listproject.add("上班那点事儿");
+        listproject.add("连载小说");
+        listproject.add("程序员");
+        listproject.add("哲思");
+        listproject.add("漫画");
+        listproject.add("任务");
+        listproject.add("文学");
+        listproject.add("游戏");
+        return listproject;
     }
 
 }

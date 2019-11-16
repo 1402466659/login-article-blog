@@ -17,4 +17,5 @@ import java.util.List;
 public interface ArticleDao {
     int[] batchInsertArticle (List<Article> articlelist) throws SQLException;
     List<Article> selectAll() throws SQLException;
+    void insertDetail(List detailmessage) throws SQLException;
 }

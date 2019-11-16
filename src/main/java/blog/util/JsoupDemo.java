@@ -35,23 +35,72 @@ public class JsoupDemo {
 //        });
 //    }
 
+/**
+ 获取文章的简单信息
+*/
+
     public static void main(String[] args) {
-        Document document = null;
-        try {
-            document = Jsoup.connect("https://www.jianshu.com/").get();
-        } catch (IOException e) {
-            System.out.println("错啦");
+        Object[]  url =null;
+        for(int num = 1;num<=3 ;num++){
+            Document document = null;
+
+            try {
+                document = Jsoup.connect("https://www.cnblogs.com/sitehome/p/"+num).get();
+            } catch (IOException e) {
+                System.out.println("错啦");
+            }
+            Elements datas =  document.getElementsByClass("post_item_body");
+            datas.forEach(data->{
+//                System.out.println(data.child(0).text());//标题
+//                System.out.println(data.child(1).text());//小内容
+//                System.out.println(data.child(2).child(1).text());//评论数
+//                System.out.println(data.child(2).child(2).text());//阅读
+            });
+            Elements detaildivs = document.getElementsByClass("titlelnk");
+            Elements dataillinks = detaildivs.select("a");
+            //获取超链接
+            dataillinks.forEach(detaillink->{
+                Document detaildocument = null;
+                try {
+                    detaildocument = Jsoup.connect(""+detaillink.attr("href")).get();
+                } catch (IOException e) {
+                    System.out.println("爬取详细信息错啦");
+                }
+                Elements detailmessage = detaildocument.getElementsByClass("postBody");
+                Elements messagelink = detailmessage.select("p");
+                messagelink.forEach(message->{
+                    System.out.println(message.text());
+                });
+
+            });
+
+
+//            System.out.println(detaildocument);
+//            Elements detaildivs = document.getElementsByClass("postBody");
+//            Elements detaillink = divs.select("p");
+//            detaillink.forEach(div->{
+//                System.out.println(div.text());
+//            });
         }
-        Elements divs = document.getElementsByClass("have-img");
-        divs.forEach(div->{
-            Article article = new Article();
-            //System.out.println(div.child(1).child(0));//标题
-            //System.out.println(div.child(1).child(1).text());//内容
-            //System.out.println(div.child(1).child(2).child(0).text());//钻石
-            //System.out.println(div.child(1).child(2).child(1));//作者
-            //System.out.println(div.child(1).child(2).child(3).text());//喜欢数
-            //System.out.println(div.child(1).child(2).child(2).text());//评论数
-        });
     }
+
+/**
+ * 获取文章的详细信息
+ */
+
+        public  void getMesssge(Object url){
+            Document document = null;
+            try {
+                document = Jsoup.connect(""+url).get();
+            } catch (IOException e) {
+                System.out.println("错啦");
+            }
+            Elements divs = document.getElementsByClass("postBody");
+            Elements link = divs.select("p");
+            link.forEach(div->{
+//                System.out.println(div.text());
+            });
+}
+
     }
 
